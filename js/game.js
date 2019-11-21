@@ -448,6 +448,49 @@ var AirPlane = function(){
 
 };
 
+
+var destroyerPlane = function(){
+	this.mesh = new THREE.Object3D();
+  this.mesh.name = "destroyerPlane";
+
+  // Create the cabin
+	var geomCockpit = new THREE.BoxGeometry(60,50,50,1,1,1);
+  var matCockpit = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+  var cockpit = new THREE.Mesh(geomCockpit, matCockpit);
+	cockpit.castShadow = true;
+  cockpit.receiveShadow = true;
+  this.mesh.add(cockpit);
+
+  // Create Engine
+  var geomEngine = new THREE.BoxGeometry(20,50,50,1,1,1);
+  var matEngine = new THREE.MeshPhongMaterial({color:Colors.white, shading:THREE.FlatShading});
+  var engine = new THREE.Mesh(geomEngine, matEngine);
+  engine.position.x = 40;
+  engine.castShadow = true;
+  engine.receiveShadow = true;
+	this.mesh.add(engine);
+
+  // Create Tailplane
+
+  var geomTailPlane = new THREE.BoxGeometry(15,20,5,1,1,1);
+  var matTailPlane = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+  var tailPlane = new THREE.Mesh(geomTailPlane, matTailPlane);
+  tailPlane.position.set(-35,25,0);
+  tailPlane.castShadow = true;
+  tailPlane.receiveShadow = true;
+	this.mesh.add(tailPlane);
+
+  // Create Wing
+
+  var geomSideWing = new THREE.BoxGeometry(40,8,150,1,1,1);
+  var matSideWing = new THREE.MeshPhongMaterial({color:Colors.red, shading:THREE.FlatShading});
+  var sideWing = new THREE.Mesh(geomSideWing, matSideWing);
+  sideWing.position.set(0,0,0);
+  sideWing.castShadow = true;
+  sideWing.receiveShadow = true;
+	this.mesh.add(sideWing);
+};
+
 Sky = function(){
   this.mesh = new THREE.Object3D();
   this.nClouds = 20;
@@ -767,7 +810,7 @@ var sea;
 var airplane;
 
 function createPlane(){
-  airplane = new AirPlane();
+  airplane = new destroyerPlane();
   airplane.mesh.scale.set(.25,.25,.25);
   airplane.mesh.position.y = game.planeDefaultHeight;
   scene.add(airplane.mesh);
@@ -868,7 +911,7 @@ function loop(){
   }
 
 
-  airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
+  // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
   sea.mesh.rotation.z += game.speed*deltaTime;//*game.seaRotationSpeed;
 
   if ( sea.mesh.rotation.z > 2*Math.PI)  sea.mesh.rotation.z -= 2*Math.PI;
@@ -939,7 +982,7 @@ function updatePlane(){
 
   airplane.mesh.position.y += (targetY-airplane.mesh.position.y)*deltaTime*game.planeMoveSensivity;
   airplane.mesh.position.x += (targetX-airplane.mesh.position.x)*deltaTime*game.planeMoveSensivity;
-
+  
   airplane.mesh.rotation.z = (targetY-airplane.mesh.position.y)*deltaTime*game.planeRotXSensivity;
   airplane.mesh.rotation.x = (airplane.mesh.position.y-targetY)*deltaTime*game.planeRotZSensivity;
   var targetCameraZ = normalize(game.planeSpeed, game.planeMinSpeed, game.planeMaxSpeed, game.cameraNearPos, game.cameraFarPos);
@@ -952,7 +995,7 @@ function updatePlane(){
   game.planeCollisionSpeedY += (0-game.planeCollisionSpeedY)*deltaTime * 0.03;
   game.planeCollisionDisplacementY += (0-game.planeCollisionDisplacementY)*deltaTime *0.01;
 
-  airplane.pilot.updateHairs();
+  // airplane.pilot.updateHairs();
 }
 
 function showReplay(){
