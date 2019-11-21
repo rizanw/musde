@@ -38,9 +38,9 @@ function createScene() {
     farPlane
     );
   scene.fog = new THREE.Fog(0xf7d9aa, 100,950);
-  camera.position.x = -200;
-  camera.position.z = 0;
-  camera.position.y = 100;
+  camera.position.x = 150;
+  camera.position.z = -150;
+  camera.position.y = 180;
   camera.lookAt(new THREE.Vector3(100, 0, 0));
 
   console.log("sumbu x : " + camera.position.x);
@@ -134,11 +134,11 @@ var AirPlane = function(){
 
   // Propeller
 
-  var geomPropeller = new THREE.BoxGeometry(20,10,10,1,1,1);
-  var matPropeller = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
-  this.propeller = new THREE.Mesh(geomPropeller, matPropeller);
-  this.propeller.castShadow = true;
-  this.propeller.receiveShadow = true;
+  // var geomPropeller = new THREE.BoxGeometry(20,10,10,1,1,1);
+  // var matPropeller = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
+  // this.propeller = new THREE.Mesh(geomPropeller, matPropeller);
+  // this.propeller.castShadow = true;
+  // this.propeller.receiveShadow = true;
 
   // Blades
 
@@ -217,7 +217,7 @@ var airplane;
 
 function createPlane(){
   airplane = new AirPlane();
-  airplane.mesh.scale.set(.25,.25,.25);
+  airplane.mesh.scale.set(.25, .25, .25);
   airplane.mesh.position.y = 100;
   scene.add(airplane.mesh);
 }
@@ -236,8 +236,8 @@ function createSky(){
 
 function loop(){
   updatePlane();
-  sea.mesh.rotation.z += .005;
-  sky.mesh.rotation.z += .01;
+  // sea.mesh.rotation.z += .005;
+  // sky.mesh.rotation.z += .01;
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
 }
@@ -264,8 +264,8 @@ function init(event){
   createScene();
   createLights();
   createPlane();
-  createSea();
-  createSky();
+  // createSea();
+  // createSky();
   loop();
 }
 

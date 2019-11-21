@@ -121,6 +121,7 @@ function createScene() {
   camera.position.z = 0;
   camera.position.y = game.planeDefaultHeight;
   camera.lookAt(new THREE.Vector3(100, 0, 0));
+  console.log("sumbu y " + camera.position.y);
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(WIDTH, HEIGHT);
