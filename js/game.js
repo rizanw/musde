@@ -41,8 +41,9 @@ function resetGame(){
           distanceForLevelUpdate:1000,
 
           planeDefaultHeight:100,
+          planeDefaultWidth:0,
           planeAmpHeight:80,
-          planeAmpWidth:75,
+          planeAmpWidth:100,
           planeMoveSensivity:0.005,
           planeRotXSensivity:0.0008,
           planeRotZSensivity:0.0004,
@@ -637,6 +638,7 @@ EnnemiesHolder.prototype.spawnEnnemies = function(){
     ennemy.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight-20);
     ennemy.mesh.position.y = -game.seaRadius + Math.sin(ennemy.angle)*ennemy.distance;
     ennemy.mesh.position.x = Math.cos(ennemy.angle)*ennemy.distance;
+    ennemy.mesh.position.z = Math.floor(Math.random() * 201) - 100;
 
     this.mesh.add(ennemy.mesh);
     this.ennemiesInUse.push(ennemy);
@@ -726,6 +728,7 @@ ParticlesHolder.prototype.spawnParticles = function(pos, density, color, scale){
     var _this = this;
     particle.mesh.position.y = pos.y;
     particle.mesh.position.x = pos.x;
+    particle.mesh.position.z = pos.z;
     particle.explode(pos,color, scale);
   }
 }
@@ -773,6 +776,7 @@ CoinsHolder.prototype.spawnCoins = function(){
     coin.distance = d + Math.cos(i*.5)*amplitude;
     coin.mesh.position.y = -game.seaRadius + Math.sin(coin.angle)*coin.distance;
     coin.mesh.position.x = Math.cos(coin.angle)*coin.distance;
+    coin.mesh.position.z = Math.floor(Math.random() * 201) - 100;
   }
 }
 
@@ -972,6 +976,7 @@ function updatePlane(){
   game.planeSpeed = normalize(mousePos.x,-.5,.5,game.planeMinSpeed, game.planeMaxSpeed);
   var targetY = normalize(mousePos.y,-.75,.75,game.planeDefaultHeight-game.planeAmpHeight, game.planeDefaultHeight+game.planeAmpHeight);
   var targetX = normalize(mousePos.x,-1,1,-game.planeAmpWidth*.7, -game.planeAmpWidth);
+  var targetZ = normalize(mousePos.x,-.75,.75,game.planeDefaultWidth-game.planeAmpWidth, game.planeDefaultWidth+game.planeAmpWidth);
 
   game.planeCollisionDisplacementX += game.planeCollisionSpeedX;
   targetX += game.planeCollisionDisplacementX;
@@ -981,12 +986,13 @@ function updatePlane(){
   targetY += game.planeCollisionDisplacementY;
 
   airplane.mesh.position.y += (targetY-airplane.mesh.position.y)*deltaTime*game.planeMoveSensivity;
-  airplane.mesh.position.x += (targetX-airplane.mesh.position.x)*deltaTime*game.planeMoveSensivity;
-  
+  // airplane.mesh.position.x += (targetX-airplane.mesh.position.x)*deltaTime*game.planeMoveSensivity;
+  airplane.mesh.position.z += (targetZ-airplane.mesh.position.z)*deltaTime*game.planeMoveSensivity;
+
   airplane.mesh.rotation.z = (targetY-airplane.mesh.position.y)*deltaTime*game.planeRotXSensivity;
   airplane.mesh.rotation.x = (airplane.mesh.position.y-targetY)*deltaTime*game.planeRotZSensivity;
   var targetCameraZ = normalize(game.planeSpeed, game.planeMinSpeed, game.planeMaxSpeed, game.cameraNearPos, game.cameraFarPos);
-  camera.fov = normalize(mousePos.x,-1,1,40, 80);
+  // camera.fov = normalize(mousePos.x,-1,1,40, 80);
   camera.updateProjectionMatrix ()
   camera.position.y += (airplane.mesh.position.y - camera.position.y)*deltaTime*game.cameraSensivity;
 
