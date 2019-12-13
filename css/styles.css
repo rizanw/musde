@@ -1,37 +1,3 @@
-@font-face {
-	font-family: 'codropsicons';
-	font-weight: normal;
-	font-style: normal;
-	src: url('../fonts/codropsicons/codropsicons.eot');
-	src: url('../fonts/codropsicons/codropsicons.eot?#iefix') format('embedded-opentype'), url('../fonts/codropsicons/codropsicons.woff') format('woff'), url('../fonts/codropsicons/codropsicons.ttf') format('truetype'), url('../fonts/codropsicons/codropsicons.svg#codropsicons') format('svg');
-}
-
-*,
-*::after,
-*::before {
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-body {
-	font-family: 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	margin: 0;
-	color: #444;
-	background: #0e2199;
-}
-
-a {
-	text-decoration: none;
-	color: #d1b790;
-	outline: none;
-}
-
-a:hover,
-a:focus {
-	color: #bba077;
-	outline: none;
-}
-
 .world {
 	position: absolute;
 	width: 100%;
