@@ -1,12 +1,13 @@
 import * as THREE from './lib/three.module.js';
-// import * from './lib/TweenMax.min.js';
-import { Colors, game, setGame } from './conf.js';
+import { Colors, game, resetGame } from './conf.js';
 import { Sea } from './3d/sea.js';
 import { Sky } from './3d/sky.js';
 import { destroyerPlane } from './3d/spacecraft.js';
 import { Particle, ParticlesHolder } from './3d/particle.js';
 import { CoinsHolder } from './3d/coin.js';
 import { Enemy, EnemiesHolder} from './3d/enemy.js';
+import { mfalcon } from './3d/mfalcon.js';
+import { Hoth } from './3d/hoth.js';
 
 // GAME VARIABLES
 var deltaTime = 0;
@@ -16,74 +17,8 @@ export var enemiesPool = [];
 export var particlesPool = [];
 var particlesInUse = [];
 
-function resetGame() {
-    setGame({
-        speed: 0,
-        initSpeed: .00035,
-        baseSpeed: .00035,
-        targetBaseSpeed: .00035,
-        incrementSpeedByTime: .0000025,
-        incrementSpeedByLevel: .000005,
-        distanceForSpeedUpdate: 100,
-        speedLastUpdate: 0,
-
-        distance: 0,
-        ratioSpeedDistance: 50,
-        energy: 100,
-        ratioSpeedEnergy: 3,
-
-        level: 1,
-        levelLastUpdate: 0,
-        distanceForLevelUpdate: 1000,
-
-        planeDefaultHeight: 100,
-        planeDefaultWidth: 0,
-        planeAmpHeight: 80,
-        planeAmpWidth: 100,
-        planeMoveSensivity: 0.005,
-        planeRotXSensivity: 0.0008,
-        planeRotZSensivity: 0.0004,
-        planeFallSpeed: .001,
-        planeMinSpeed: 1.2,
-        planeMaxSpeed: 1.6,
-        planeSpeed: 0,
-        planeCollisionDisplacementX: 0,
-        planeCollisionSpeedX: 0,
-
-        planeCollisionDisplacementY: 0,
-        planeCollisionSpeedY: 0,
-
-        seaRadius: 600,
-        seaLength: 800,
-        //seaRotationSpeed:0.006,
-        wavesMinAmp: 5,
-        wavesMaxAmp: 20,
-        wavesMinSpeed: 0.001,
-        wavesMaxSpeed: 0.003,
-
-        cameraFarPos: 500,
-        cameraNearPos: 150,
-        cameraSensivity: 0.002,
-
-        coinDistanceTolerance: 15,
-        coinValue: 3,
-        coinsSpeed: .5,
-        coinLastSpawn: 0,
-        distanceForCoinsSpawn: 100,
-
-        enemyDistanceTolerance: 10,
-        enemyValue: 10,
-        enemiesSpeed: .6,
-        enemyLastSpawn: 0,
-        distanceForEnemiesSpawn: 50,
-
-        status: "playing",
-    });
-    fieldLevel.innerHTML = Math.floor(game.level);
-}
-
 //THREEJS RELATED VARIABLES
-var scene,
+export var scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane,
     renderer,
     container,
@@ -108,10 +43,10 @@ function createScene() {
         nearPlane,
         farPlane
     );
-    scene.fog = new THREE.Fog(0xf7d9aa, 100, 950);
+    scene.fog = new THREE.Fog(0xa3e5ff, 100, 950);
     camera.position.x = -200;
     camera.position.z = 0;
-    camera.position.y = game.planeDefaultHeight;
+    camera.position.y = game.planeDefaultHeight-50;
     camera.lookAt(new THREE.Vector3(100, 0, 0));
     // console.log("sumbu y " + camera.position.y);
 
@@ -171,10 +106,10 @@ function handleTouchEnd(event) {
 }
 
 // LIGHTS
-var ambientLight, hemisphereLight, shadowLight;
+export var ambientLight, hemisphereLight, shadowLight;
 function createLights() {
-    hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, .9)
-    ambientLight = new THREE.AmbientLight(0xdc8874, .5);
+    hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, .9)
+    ambientLight = new THREE.AmbientLight(0xa3e5ff, .5); //TODO:: ganti biru
 
     shadowLight = new THREE.DirectionalLight(0xffffff, .9);
     shadowLight.position.set(150, 350, 350);
@@ -193,39 +128,6 @@ function createLights() {
     scene.add(hemisphereLight);
     scene.add(shadowLight);
     scene.add(ambientLight);
-}
-
-
-
-function updatePlane() {
-    game.planeSpeed = normalize(mousePos.x, -.5, .5, game.planeMinSpeed, game.planeMaxSpeed);
-    var targetY = normalize(mousePos.y, -.75, .75, game.planeDefaultHeight - game.planeAmpHeight, game.planeDefaultHeight + game.planeAmpHeight);
-    var targetX = normalize(mousePos.x, -1, 1, -game.planeAmpWidth * .7, -game.planeAmpWidth);
-    var targetZ = normalize(mousePos.x, -.75, .75, game.planeDefaultWidth - game.planeAmpWidth, game.planeDefaultWidth + game.planeAmpWidth);
-
-    game.planeCollisionDisplacementX += game.planeCollisionSpeedX;
-    targetX += game.planeCollisionDisplacementX;
-
-    game.planeCollisionDisplacementY += game.planeCollisionSpeedY;
-    targetY += game.planeCollisionDisplacementY;
-
-    airplane.mesh.position.y += (targetY - airplane.mesh.position.y) * deltaTime * game.planeMoveSensivity;
-    // airplane.mesh.position.x += (targetX-airplane.mesh.position.x)*deltaTime*game.planeMoveSensivity;
-    airplane.mesh.position.z += (targetZ - airplane.mesh.position.z) * deltaTime * game.planeMoveSensivity;
-
-    airplane.mesh.rotation.z = (targetY - airplane.mesh.position.y) * deltaTime * game.planeRotXSensivity;
-    airplane.mesh.rotation.x = (airplane.mesh.position.y - targetY) * deltaTime * game.planeRotZSensivity;
-    var targetCameraZ = normalize(game.planeSpeed, game.planeMinSpeed, game.planeMaxSpeed, game.cameraNearPos, game.cameraFarPos);
-    // camera.fov = normalize(mousePos.x,-1,1,40, 80);
-    camera.updateProjectionMatrix()
-    camera.position.y += (airplane.mesh.position.y - camera.position.y) * deltaTime * game.cameraSensivity;
-
-    game.planeCollisionSpeedX += (0 - game.planeCollisionSpeedX) * deltaTime * 0.03;
-    game.planeCollisionDisplacementX += (0 - game.planeCollisionDisplacementX) * deltaTime * 0.01;
-    game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * deltaTime * 0.03;
-    game.planeCollisionDisplacementY += (0 - game.planeCollisionDisplacementY) * deltaTime * 0.01;
-
-    // airplane.pilot.updateHairs();
 }
 
 
@@ -288,16 +190,27 @@ export var enemiesHolder;
 export var particlesHolder;
 export var airplane;
 
+// export function loadToScene(model) {
+//     model.children[0].name = 'Plane';
+//     model.position.y = game.planeDefaultHeight;
+//     scene.add(model);
+
+// }
+
 function createPlane() {
-    airplane = new destroyerPlane();
-    airplane.mesh.scale.set(.25, .25, .25);
+    // airplane = new destroyerPlane();
+    airplane = new mfalcon();
+
+    airplane.mesh.rotation.y = Math.PI/2;
+    airplane.mesh.scale.set(.075, .075, .075);
     airplane.mesh.position.y = game.planeDefaultHeight;
     scene.add(airplane.mesh);
+    return 0;
 }
 
 function createSea() {
-    sea = new Sea();
-    sea.mesh.position.y = -game.seaRadius;
+    sea = new Hoth();
+    sea.mesh.position.y = -game.seaRadius-100;
     scene.add(sea.mesh);
 }
 
@@ -308,7 +221,7 @@ function createSky() {
 }
 
 function createCoins() {
-    coinsHolder = new CoinsHolder(20);
+    coinsHolder = new CoinsHolder(100);
     scene.add(coinsHolder.mesh)
 }
 
@@ -330,6 +243,38 @@ function createParticles() {
     particlesHolder = new ParticlesHolder();
     //enemiesHolder.mesh.position.y = -game.seaRadius;
     scene.add(particlesHolder.mesh)
+}
+
+
+function updatePlane() {
+    game.planeSpeed = normalize(mousePos.x, -.5, .5, game.planeMinSpeed, game.planeMaxSpeed);
+    var targetY = normalize(mousePos.y, -1, 1, game.planeDefaultHeight - game.planeAmpHeight, game.planeDefaultHeight + game.planeAmpHeight);
+    var targetX = normalize(mousePos.x, -1, 1, -game.planeAmpWidth * .7, -game.planeAmpWidth);
+    var targetZ = normalize(mousePos.x, -1, 1, game.planeDefaultWidth - game.planeAmpWidth, game.planeDefaultWidth + game.planeAmpWidth);
+
+    game.planeCollisionDisplacementX += game.planeCollisionSpeedX;
+    targetX += game.planeCollisionDisplacementX;
+
+    game.planeCollisionDisplacementY += game.planeCollisionSpeedY;
+    targetY += game.planeCollisionDisplacementY;
+
+    airplane.mesh.position.y += (targetY - airplane.mesh.position.y) * deltaTime * game.planeMoveSensivity;
+    // airplane.mesh.position.x += (targetX-airplane.mesh.position.x)*deltaTime*game.planeMoveSensivity;
+    airplane.mesh.position.z += (targetZ - airplane.mesh.position.z) * deltaTime * game.planeMoveSensivity;
+
+    airplane.mesh.rotation.z = (targetY - airplane.mesh.position.y) * deltaTime * game.planeRotXSensivity;
+    airplane.mesh.rotation.x = (airplane.mesh.position.y - targetY) * deltaTime * game.planeRotZSensivity;
+    var targetCameraZ = normalize(game.planeSpeed, game.planeMinSpeed, game.planeMaxSpeed, game.cameraNearPos, game.cameraFarPos);
+    // camera.fov = normalize(mousePos.x,-1,1,40, 80);
+    camera.updateProjectionMatrix()
+    camera.position.y += (airplane.mesh.position.y - camera.position.y) * deltaTime * game.cameraSensivity;
+
+    game.planeCollisionSpeedX += (0 - game.planeCollisionSpeedX) * deltaTime * 0.03;
+    game.planeCollisionDisplacementX += (0 - game.planeCollisionDisplacementX) * deltaTime * 0.01;
+    game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * deltaTime * 0.03;
+    game.planeCollisionDisplacementY += (0 - game.planeCollisionDisplacementY) * deltaTime * 0.01;
+
+    // airplane.pilot.updateHairs();
 }
 
 function loop() {
@@ -382,17 +327,14 @@ function loop() {
     }
 
     // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
-    sea.mesh.rotation.z += game.speed * deltaTime;//*game.seaRotationSpeed;
-
-    if (sea.mesh.rotation.z > 2 * Math.PI) sea.mesh.rotation.z -= 2 * Math.PI;
-
     ambientLight.intensity += (.5 - ambientLight.intensity) * deltaTime * 0.005;
 
     coinsHolder.rotateCoins(deltaTime);
     enemiesHolder.rotateEnemies(deltaTime);
 
     sky.moveClouds(deltaTime);
-    sea.moveWaves(deltaTime);
+    sea.rotate(deltaTime);
+    // sea.moveWaves(deltaTime);
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop);

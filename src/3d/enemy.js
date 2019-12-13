@@ -1,6 +1,6 @@
 import * as THREE from '../lib/three.module.js';
 import { game, Colors } from '../conf.js';
-import { airplane, enemiesPool, removeEnergy } from '../index.js';
+import { airplane, enemiesPool, removeEnergy, particlesHolder, ambientLight } from '../index.js';
 
 export function Enemy() {
     var geom = new THREE.TetrahedronGeometry(8, 2);

@@ -1,7 +1,7 @@
-
 import * as THREE from '../lib/three.module.js';
 import { game } from '../conf.js';
-import { airplane, particlesHolder, addEnergy } from '../index.js';
+import { airplane, addEnergy, particlesHolder } from '../index.js';
+// import { particlesHolder } from './particle.js';
 
 export function Coin() {
     var geom = new THREE.TetrahedronGeometry(5, 0);
