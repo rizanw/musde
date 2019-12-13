@@ -1,4 +1,4 @@
-import * as THREE from '../lib/three.js';
+import * as THREE from '../lib/three.module.js';
 import { Colors } from '../conf.js';
 
 export function Cloud() {

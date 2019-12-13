@@ -1,5 +1,7 @@
 
-import * as THREE from '../lib/three.js';
+import * as THREE from '../lib/three.module.js';
+import { game } from '../conf.js';
+import { airplane, particlesHolder, addEnergy } from '../index.js';
 
 export function Coin() {
     var geom = new THREE.TetrahedronGeometry(5, 0);
@@ -47,7 +49,7 @@ CoinsHolder.prototype.spawnCoins = function () {
     }
 }
 
-CoinsHolder.prototype.rotateCoins = function () {
+CoinsHolder.prototype.rotateCoins = function (deltaTime) {
     for (var i = 0; i < this.coinsInUse.length; i++) {
         var coin = this.coinsInUse[i];
         if (coin.exploding) continue;

@@ -1,5 +1,6 @@
-import * as THREE from '../lib/three.js';
+import * as THREE from '../lib/three.module.js';
 import { Cloud } from './cloud.js';
+import { game } from '../conf.js';
 
 export function Sky() {
     this.mesh = new THREE.Object3D();
@@ -21,7 +22,7 @@ export function Sky() {
     }
 }
 
-Sky.prototype.moveClouds = function () {
+Sky.prototype.moveClouds = function (deltaTime) {
     for (var i = 0; i < this.nClouds; i++) {
         var c = this.clouds[i];
         c.rotate();

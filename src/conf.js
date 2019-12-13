@@ -12,6 +12,9 @@ var Colors = {
 
 var game = {};
 
+function setGame(val) {
+    game = val;
+}
 
 
-export {Colors, game};
+export {Colors, game, setGame};

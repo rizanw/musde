@@ -35,7 +35,7 @@ export function Sea() {
 
 }
 
-Sea.prototype.moveWaves = function () {
+Sea.prototype.moveWaves = function (deltaTime) {
     var verts = this.mesh.geometry.vertices;
     var l = verts.length;
     for (var i = 0; i < l; i++) {
