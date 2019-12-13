@@ -38,9 +38,10 @@ function createScene() {
     farPlane
     );
   scene.fog = new THREE.Fog(0xf7d9aa, 100,950);
-  camera.position.x = 0;
-  camera.position.z = 200;
+  camera.position.x = -200;
+  camera.position.z = 0;
   camera.position.y = 100;
+  camera.lookAt(new THREE.Vector3(100, 0, 0));
 
   renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(WIDTH, HEIGHT);
@@ -127,26 +128,26 @@ var AirPlane = function(){
   sideWing.receiveShadow = true;
 	this.mesh.add(sideWing);
 
-  // Propeller
+  // // Propeller
 
-  var geomPropeller = new THREE.BoxGeometry(20,10,10,1,1,1);
-  var matPropeller = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
-  this.propeller = new THREE.Mesh(geomPropeller, matPropeller);
-  this.propeller.castShadow = true;
-  this.propeller.receiveShadow = true;
+  // var geomPropeller = new THREE.BoxGeometry(20,10,10,1,1,1);
+  // var matPropeller = new THREE.MeshPhongMaterial({color:Colors.brown, shading:THREE.FlatShading});
+  // this.propeller = new THREE.Mesh(geomPropeller, matPropeller);
+  // this.propeller.castShadow = true;
+  // this.propeller.receiveShadow = true;
 
-  // Blades
+  // // Blades
 
-  var geomBlade = new THREE.BoxGeometry(1,100,20,1,1,1);
-  var matBlade = new THREE.MeshPhongMaterial({color:Colors.brownDark, shading:THREE.FlatShading});
+  // var geomBlade = new THREE.BoxGeometry(1,100,20,1,1,1);
+  // var matBlade = new THREE.MeshPhongMaterial({color:Colors.brownDark, shading:THREE.FlatShading});
 
-  var blade = new THREE.Mesh(geomBlade, matBlade);
-  blade.position.set(8,0,0);
-  blade.castShadow = true;
-  blade.receiveShadow = true;
-	this.propeller.add(blade);
-  this.propeller.position.set(50,0,0);
-  this.mesh.add(this.propeller);
+  // var blade = new THREE.Mesh(geomBlade, matBlade);
+  // blade.position.set(8,0,0);
+  // blade.castShadow = true;
+  // blade.receiveShadow = true;
+	// this.propeller.add(blade);
+  // this.propeller.position.set(50,0,0);
+  // this.mesh.add(this.propeller);
 };
 
 Sky = function(){
@@ -212,7 +213,7 @@ var airplane;
 
 function createPlane(){
   airplane = new AirPlane();
-  airplane.mesh.scale.set(.25,.25,.25);
+  airplane.mesh.scale.set(.15,.15,.15);
   airplane.mesh.position.y = 100;
   scene.add(airplane.mesh);
 }
@@ -238,11 +239,13 @@ function loop(){
 }
 
 function updatePlane(){
-  var targetY = normalize(mousePos.y,-.75,.75,25, 175);
-  var targetX = normalize(mousePos.x,-.75,.75,-100, 100);
+  var targetY = normalize(mousePos.y,-.75,.75,25, 120);
+  var targetX = normalize(mousePos.x,-.75,.75,-100, 185);
+  var targetZ = normalize(mousePos.x,-.75,.75,-195, 195);
   airplane.mesh.position.y = targetY;
-  airplane.mesh.position.x = targetX;
-  airplane.propeller.rotation.x += 0.3;
+  // airplane.mesh.position.x = targetX;
+  airplane.mesh.position.z = targetZ;
+  // airplane.propeller.rotation.x += 0.3;
 }
 
 function normalize(v,vmin,vmax,tmin, tmax){
