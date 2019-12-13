@@ -1,23 +1,23 @@
 import * as THREE from './lib/three.module.js';
 // import * from './lib/TweenMax.min.js';
-import { Colors, game } from './conf.js';
+import { Colors, game, setGame } from './conf.js';
 import { Sea } from './3d/sea.js';
 import { Sky } from './3d/sky.js';
 import { destroyerPlane } from './3d/spacecraft.js';
 import { Particle, ParticlesHolder } from './3d/particle.js';
 import { CoinsHolder } from './3d/coin.js';
-import { Ennemy, EnnemiesHolder} from './3d/ennemy.js';
+import { Enemy, EnemiesHolder} from './3d/enemy.js';
 
 // GAME VARIABLES
 var deltaTime = 0;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
-var ennemiesPool = [];
-var particlesPool = [];
+export var enemiesPool = [];
+export var particlesPool = [];
 var particlesInUse = [];
 
 function resetGame() {
-    game = {
+    setGame({
         speed: 0,
         initSpeed: .00035,
         baseSpeed: .00035,
@@ -71,14 +71,14 @@ function resetGame() {
         coinLastSpawn: 0,
         distanceForCoinsSpawn: 100,
 
-        ennemyDistanceTolerance: 10,
-        ennemyValue: 10,
-        ennemiesSpeed: .6,
-        ennemyLastSpawn: 0,
-        distanceForEnnemiesSpawn: 50,
+        enemyDistanceTolerance: 10,
+        enemyValue: 10,
+        enemiesSpeed: .6,
+        enemyLastSpawn: 0,
+        distanceForEnemiesSpawn: 50,
 
         status: "playing",
-    };
+    });
     fieldLevel.innerHTML = Math.floor(game.level);
 }
 
@@ -262,12 +262,12 @@ function updateEnergy() {
         game.status = "gameover";
     }
 }
-function addEnergy() {
+export function addEnergy() {
     game.energy += game.coinValue;
     game.energy = Math.min(game.energy, 100);
 }
-function removeEnergy() {
-    game.energy -= game.ennemyValue;
+export function removeEnergy() {
+    game.energy -= game.enemyValue;
     game.energy = Math.max(0, game.energy);
 }
 
@@ -281,8 +281,12 @@ function hideReplay() {
 
 
 // 3D Models
-var sea;
-var airplane;
+export var sea;
+export var sky;
+export var coinsHolder;
+export var enemiesHolder;
+export var particlesHolder;
+export var airplane;
 
 function createPlane() {
     airplane = new destroyerPlane();
@@ -308,14 +312,14 @@ function createCoins() {
     scene.add(coinsHolder.mesh)
 }
 
-function createEnnemies() {
+function createEnemies() {
     for (var i = 0; i < 10; i++) {
-        var ennemy = new Ennemy();
-        ennemiesPool.push(ennemy);
+        var enemy = new Enemy();
+        enemiesPool.push(enemy);
     }
-    ennemiesHolder = new EnnemiesHolder();
-    //ennemiesHolder.mesh.position.y = -game.seaRadius;
-    scene.add(ennemiesHolder.mesh)
+    enemiesHolder = new EnemiesHolder();
+    //enemiesHolder.mesh.position.y = -game.seaRadius;
+    scene.add(enemiesHolder.mesh)
 }
 
 function createParticles() {
@@ -324,7 +328,7 @@ function createParticles() {
         particlesPool.push(particle);
     }
     particlesHolder = new ParticlesHolder();
-    //ennemiesHolder.mesh.position.y = -game.seaRadius;
+    //enemiesHolder.mesh.position.y = -game.seaRadius;
     scene.add(particlesHolder.mesh)
 }
 
@@ -345,9 +349,9 @@ function loop() {
             game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
         }
 
-        if (Math.floor(game.distance) % game.distanceForEnnemiesSpawn == 0 && Math.floor(game.distance) > game.ennemyLastSpawn) {
-            game.ennemyLastSpawn = Math.floor(game.distance);
-            ennemiesHolder.spawnEnnemies();
+        if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
+            game.enemyLastSpawn = Math.floor(game.distance);
+            enemiesHolder.spawnEnemies();
         }
 
         if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
@@ -384,11 +388,11 @@ function loop() {
 
     ambientLight.intensity += (.5 - ambientLight.intensity) * deltaTime * 0.005;
 
-    coinsHolder.rotateCoins();
-    ennemiesHolder.rotateEnnemies();
+    coinsHolder.rotateCoins(deltaTime);
+    enemiesHolder.rotateEnemies(deltaTime);
 
-    sky.moveClouds();
-    sea.moveWaves();
+    sky.moveClouds(deltaTime);
+    sea.moveWaves(deltaTime);
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
@@ -412,7 +416,7 @@ function init(event) {
     createSea();
     createSky();
     createCoins();
-    createEnnemies();
+    createEnemies();
     createParticles();
 
     // Controll the game
