@@ -1,0 +1,26 @@
+{
+  "name": "musde",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizanw/musde.git"
+  },
+  "author": "ray-marcher-grafkom-d",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rizanw/musde/issues"
+  },
+  "homepage": "https://github.com/rizanw/musde#readme",
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  },
+  "dependencies": {
+    "leapjs": "^0.6.4",
+    "three": "^0.111.0"
+  }
+}
