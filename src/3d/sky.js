@@ -1,4 +1,4 @@
-import * as THREE from '../lib/three.module.js';
+import * as THREE from "three";
 import { Cloud } from './cloud.js';
 import { game } from '../conf.js';
 

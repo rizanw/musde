@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,15 @@
   },
   "homepage": "https://github.com/rizanw/musde#readme",
   "devDependencies": {
-    "mocha": "^6.2.2"
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "mocha": "^6.2.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "@babel/core": "^7.7.5",
     "leapjs": "^0.6.4",
     "three": "^0.111.0"
   }

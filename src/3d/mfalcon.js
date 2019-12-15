@@ -1,16 +1,14 @@
-import * as THREE from "../lib/three.module.js";
-import {GLTFLoader} from 'https://threejsfundamentals.org/threejs/resources/threejs/r110/examples/jsm/loaders/GLTFLoader.js';
-import { scene } from "../index.js";
+import * as THREE from "three";
+import GLTFLoader from "../util/GLTFLoader";
 
 export function mfalcon() {
     this.mesh = new THREE.Object3D();
-    this.mesh.name = "destroyerPlane";
 
-    var loader = new GLTFLoader().setPath("/src/gltf/mfalcon/");
-    loader.load("mfalcon.gltf", (gltf) => {
-        var sps = gltf.scene;
-        sps.name = 'Plane';
+    var loader = new GLTFLoader();
+    loader.load("/3d/mfalcon/mfalcon.gltf", (gltf) => {
+        var sc = gltf.scene;
+        sc.name = 'Plane';
 
-        this.mesh.add(sps);
+        this.mesh.add(sc);
     });
 }

@@ -1,8 +1,6 @@
-import * as THREE from './lib/three.module.js';
+import * as THREE from "three";
 import { Colors, game, resetGame } from './conf.js';
-import { Sea } from './3d/sea.js';
 import { Sky } from './3d/sky.js';
-import { destroyerPlane } from './3d/spacecraft.js';
 import { Particle, ParticlesHolder } from './3d/particle.js';
 import { CoinsHolder } from './3d/coin.js';
 import { Enemy, EnemiesHolder} from './3d/enemy.js';
@@ -149,7 +147,6 @@ function normalize(v, vmin, vmax, tmin, tmax) {
     return tv;
 }
 
-var blinkEnergy = false;
 function updateEnergy() {
     game.energy -= game.speed * deltaTime * game.ratioSpeedEnergy;
     game.energy = Math.max(0, game.energy);
@@ -334,7 +331,6 @@ function loop() {
 
     sky.moveClouds(deltaTime);
     sea.rotate(deltaTime);
-    // sea.moveWaves(deltaTime);
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop);

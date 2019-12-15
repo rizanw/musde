@@ -1,4 +1,4 @@
-var Leap = require('leapjs');
+import Leap from 'leapjs';
 
 // Setup Leap loop with frame callback function
 var controllerOptions = {loopWhileDisconnected: true};

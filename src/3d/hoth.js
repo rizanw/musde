@@ -1,4 +1,4 @@
-import * as THREE from '../lib/three.module.js';
+import * as THREE from "three";
 import { game } from '../conf.js';
 
 export function Hoth() {
@@ -8,7 +8,7 @@ export function Hoth() {
 
     var loader = new THREE.TextureLoader();
     var mat = new THREE.MeshBasicMaterial({
-        map: loader.load('/src/texture/hoth.png')
+        map: loader.load('/texture/hoth.png')
     });
 
     this.mesh = new THREE.Mesh(geom, mat);
@@ -17,7 +17,6 @@ export function Hoth() {
 }
 
 Hoth.prototype.rotate = function (deltaTime) {
-    // this.mesh.position = {-20;
     this.mesh.rotation.z += game.speed * deltaTime;
 
     if (this.mesh.rotation.z > 2 * Math.PI) this.mesh.rotation.z -= 2 * Math.PI;

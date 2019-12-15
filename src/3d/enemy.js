@@ -1,4 +1,4 @@
-import * as THREE from '../lib/three.module.js';
+import * as THREE from "three";
 import { game, Colors } from '../conf.js';
 import { airplane, enemiesPool, removeEnergy, particlesHolder, ambientLight } from '../index.js';
 
