@@ -276,22 +276,15 @@ export var airplane;
 
 export var audioHit;
 export var audioCollide;
-<<<<<<< HEAD
 export var audioWarp;
-var audioEngine;
-=======
 var audioEngine, audioPlaying;
->>>>>>> 33346fbc158af49d3f78901d96537081afd9a781
 
 function createAudio() {
     audioHit = new AudioJam("/audio/explosion.mp3");
     audioEngine = new AudioJam("/audio/engine2.mp3");
     audioCollide = new AudioJam("/audio/explosion.mp3");
-<<<<<<< HEAD
     audioWarp = new AudioJam("/audio/warp.mp3");
-=======
     audioPlaying = new AudioJam("/audio/sw_intothetrap.mp3");
->>>>>>> 33346fbc158af49d3f78901d96537081afd9a781
 }
 
 function createPlane() {
