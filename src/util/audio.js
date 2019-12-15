@@ -13,6 +13,12 @@ export class AudioJam {
     }
 
     play(loop=false){
+        if(this.sound.isPlaying){
+            this.sound.stop();
+            this.sound.play();
+            return 0;
+        }
+
         var audioLoader = new THREE.AudioLoader();
 
         audioLoader.load(this.fname, (buffer) => {

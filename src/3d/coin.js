@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { game } from '../conf.js';
 import { airplane, addEnergy, particlesHolder } from '../index.js';
+import GLTFLoader from '../util/GLTFLoader';
 // import { particlesHolder } from './particle.js';
 
 export class Coin {
@@ -18,6 +19,19 @@ export class Coin {
         this.angle = 0;
         this.dist = 0;
     }
+
+    swap() {
+        var rand = Math.floor(Math.random() * 2);
+        
+        var fname = rand == 0 ? 'stormtrooper' : 'starbucks'; 
+
+        var loader = new GLTFLoader();
+        loader.load(`/3d/debris/${fname}/scene.gltf`, (gltf) => {
+            var sc = gltf.scene;
+
+            this.mesh = sc;
+        });       
+    }
 }
 
 export class CoinsHolder {
@@ -27,6 +41,7 @@ export class CoinsHolder {
         this.coinsPool = [];
         for (var i = 0; i < nCoins; i++) {
             var coin = new Coin();
+            coin.swap();
             this.coinsPool.push(coin);
         }
     }

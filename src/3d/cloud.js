@@ -18,7 +18,7 @@ export class Cloud {
             m.position.z = Math.random() * 10;
             m.rotation.z = Math.random() * Math.PI * 2;
             m.rotation.y = Math.random() * Math.PI * 2;
-            var s = .7 + Math.random() * 10;
+            var s = .7 + Math.random() * 0.5;
             m.scale.set(s, s, s);
             this.mesh.add(m);
             m.castShadow = true;
