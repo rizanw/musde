@@ -6,6 +6,8 @@ import { CoinsHolder } from './3d/coin';
 import { Enemy, EnemiesHolder} from './3d/enemy';
 import { Falcon } from './3d/falcon';
 import { Planet } from './3d/planet';
+import { handleHandPos, isHandDetected, handleHandState } from './util/leap';
+import * as Leap from 'leapjs';
 
 // GAME VARIABLES
 var deltaTime = 0;
@@ -23,7 +25,7 @@ export var scene,
     controls;
 
 //SCREEN & MOUSE VARIABLES
-var HEIGHT, WIDTH, mousePos = { x: 0, y: 0 };
+var HEIGHT, WIDTH, mousePos = { x: 0, y: 0 }, handPos = { x: 0, y: 0 };
 
 //INIT THREE JS, SCREEN AND MOUSE EVENTS
 function createScene() {
@@ -80,6 +82,7 @@ function handleMouseMove(event) {
     var tx = -1 + (event.clientX / WIDTH) * 2;
     var ty = 1 - (event.clientY / HEIGHT) * 2;
     mousePos = { x: tx, y: ty };
+    // console.log(mousePos);
 }
 
 function handleTouchMove(event) {
@@ -100,6 +103,26 @@ function handleTouchEnd(event) {
     if (game.status == "waitingReplay") {
         resetGame();
         hideReplay();
+    }
+}
+
+function handleHandGrab(frame) {
+    if (game.status == "waitingReplay") { 
+        if (frame.hands.length > 0) {
+            var hand = frame.hands[0]; 
+ 
+            if(handleHandState(hand, 10) == "opening"){      
+                resetGame();
+                hideReplay();
+            }
+        }
+    }
+}
+
+function handleHandMove(frame) { 
+    var temp = mousePos;
+    if(isHandDetected(frame)){    
+        mousePos = handleHandPos(frame, temp); 
     }
 }
 
@@ -271,13 +294,13 @@ function updatePlane() {
     game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * deltaTime * 0.03;
     game.planeCollisionDisplacementY += (0 - game.planeCollisionDisplacementY) * deltaTime * 0.01;
 
-    // airplane.pilot.updateHairs();
 }
 
 function loop() {
     newTime = new Date().getTime();
     deltaTime = newTime - oldTime;
     oldTime = newTime;
+
 
     if (game.status == "playing") {
         // Add energy coins every 100m;
@@ -337,7 +360,7 @@ function loop() {
 }
 
 // MAIN 
-var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle;
+var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, leap;
 function init(event) {
     // UI
     fieldDistance = document.getElementById("distValue");
@@ -357,11 +380,16 @@ function init(event) {
     createEnemies();
     createParticles();
 
+    leap = new Leap.Controller();
+    leap.connect();
+
     // Controll the game
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
     document.addEventListener('mouseup', handleMouseUp, false);
-    document.addEventListener('touchend', handleTouchEnd, false);
+    document.addEventListener('touchend', handleTouchEnd, false); 
+    leap.on('frame', handleHandMove);
+    leap.on('frame', handleHandGrab);
 
     // Run the game
     loop();
