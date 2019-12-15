@@ -5,7 +5,7 @@ import { airplane, addEnergy, particlesHolder } from '../index.js';
 
 export class Coin {
     constructor() {
-        var geom = new THREE.TetrahedronGeometry(5, 0);
+        var geom = new THREE.IcosahedronGeometry(5, 0);
         var mat = new THREE.MeshPhongMaterial({
             color: 0x009999,
             shininess: 0,
