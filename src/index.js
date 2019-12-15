@@ -43,7 +43,7 @@ function createScene() {
         nearPlane,
         farPlane
     );
-    scene.fog = new THREE.Fog(0xa3e5ff, 100, 950);
+    scene.fog = new THREE.Fog(0xffffff,800, 950);
     camera.position.x = -200;
     camera.position.z = 0;
     camera.position.y = game.planeDefaultHeight-50;
@@ -146,6 +146,11 @@ function createLights() {
 
     var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
     // scene.add(ch);
+
+    var pointyLight = new THREE.PointLight(0xffffff, 0.1, 0, 1);
+    pointyLight.name = "Pointy";
+    pointyLight.position.set(0, 0, 0);
+    scene.add(pointyLight);
     scene.add(hemisphereLight);
     scene.add(shadowLight);
     scene.add(ambientLight);
@@ -211,12 +216,14 @@ export var airplane;
 
 export var audioHit;
 export var audioCollide;
+export var audioWarp;
 var audioEngine;
 
 function createAudio() {
     audioHit = new AudioJam("/audio/explosion.mp3");
     audioEngine = new AudioJam("/audio/engine2.mp3");
     audioCollide = new AudioJam("/audio/explosion.mp3");
+    audioWarp = new AudioJam("/audio/warp.mp3");
 }
 
 function createPlane() {
@@ -319,6 +326,11 @@ function loop() {
         if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
             game.enemyLastSpawn = Math.floor(game.distance);
             enemiesHolder.spawnEnemies();
+        }
+
+        if(Math.floor(game.distance) % 213 < 2 && game.distance > 100) {
+            console.log("should tr");
+            planet.transition();
         }
 
         updatePlane();
