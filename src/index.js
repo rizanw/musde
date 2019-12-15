@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { Colors, game, resetGame } from './conf.js';
-import { Sky } from './3d/sky.js';
-import { Particle, ParticlesHolder } from './3d/particle.js';
-import { CoinsHolder } from './3d/coin.js';
-import { Enemy, EnemiesHolder} from './3d/enemy.js';
-import { mfalcon } from './3d/mfalcon.js';
-import { Hoth } from './3d/hoth.js';
+import { Colors, game, resetGame } from './conf';
+import { Sky } from './3d/sky';
+import { Particle, ParticlesHolder } from './3d/particle';
+import { CoinsHolder } from './3d/coin';
+import { Enemy, EnemiesHolder} from './3d/enemy';
+import { Falcon } from './3d/falcon';
+import { Planet } from './3d/planet';
 
 // GAME VARIABLES
 var deltaTime = 0;
@@ -180,7 +180,7 @@ function hideReplay() {
 
 
 // 3D Models
-export var sea;
+export var planet;
 export var sky;
 export var coinsHolder;
 export var enemiesHolder;
@@ -196,7 +196,7 @@ export var airplane;
 
 function createPlane() {
     // airplane = new destroyerPlane();
-    airplane = new mfalcon();
+    airplane = new Falcon();
 
     airplane.mesh.rotation.y = Math.PI/2;
     airplane.mesh.scale.set(.075, .075, .075);
@@ -206,14 +206,14 @@ function createPlane() {
 }
 
 function createSea() {
-    sea = new Hoth();
-    sea.mesh.position.y = -game.seaRadius-100;
-    scene.add(sea.mesh);
+    planet = new Planet();
+    planet.mesh.position.y = -game.planetRadius-100;
+    scene.add(planet.mesh);
 }
 
 function createSky() {
     sky = new Sky();
-    sky.mesh.position.y = -game.seaRadius;
+    sky.mesh.position.y = -game.planetRadius;
     scene.add(sky.mesh);
 }
 
@@ -228,7 +228,7 @@ function createEnemies() {
         enemiesPool.push(enemy);
     }
     enemiesHolder = new EnemiesHolder();
-    //enemiesHolder.mesh.position.y = -game.seaRadius;
+    //enemiesHolder.mesh.position.y = -game.planetRadius;
     scene.add(enemiesHolder.mesh)
 }
 
@@ -238,7 +238,7 @@ function createParticles() {
         particlesPool.push(particle);
     }
     particlesHolder = new ParticlesHolder();
-    //enemiesHolder.mesh.position.y = -game.seaRadius;
+    //enemiesHolder.mesh.position.y = -game.planetRadius;
     scene.add(particlesHolder.mesh)
 }
 
@@ -330,7 +330,7 @@ function loop() {
     enemiesHolder.rotateEnemies(deltaTime);
 
     sky.moveClouds(deltaTime);
-    sea.rotate(deltaTime);
+    planet.rotate(deltaTime);
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
