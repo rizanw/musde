@@ -5,6 +5,7 @@ import bgAudio from './bg.mp3'
 import warpAudio from './warp.mp3'
 import clickAudio from './click.mp3'
 import explosionAudio from './explosion.mp3'
+import intoTheTrapAudio from './sw_intothetrap.mp3';
 
 const mp3 = { explosion: explosionAudio }
 
@@ -15,5 +16,6 @@ const bg = new Audio(bgAudio)
 const warp = new Audio(warpAudio)
 const click = new Audio(clickAudio)
 const explosion = new Audio(explosionAudio)
+const intoTheTrap = new Audio(intoTheTrapAudio)
 
-export { zap, engine, engine2, bg, warp, click, explosion, mp3 }
+export { intoTheTrap, zap, engine, engine2, bg, warp, click, explosion, mp3 }

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { game, Colors } from '../conf.js';
-import { airplane, enemiesPool, removeEnergy, particlesHolder, ambientLight } from '../index.js';
+import { airplane, enemiesPool, removeEnergy, decreaseHealth, particlesHolder, ambientLight } from '../index.js';
 
 export class Enemy {
     constructor() {
@@ -71,6 +71,7 @@ export class EnemiesHolder {
                 ambientLight.intensity = 2;
 
                 removeEnergy();
+                decreaseHealth();
                 i--;
             } else if (enemy.angle > Math.PI) {
                 enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);

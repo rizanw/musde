@@ -25,6 +25,7 @@ function resetGame() {
         distance: 0,
         ratioSpeedDistance: 50,
         energy: 100,
+        health: 100,
         ratioSpeedEnergy: 3,
 
         level: 1,
@@ -66,6 +67,7 @@ function resetGame() {
         coinsSpeed: .5,
         coinLastSpawn: 0,
         distanceForCoinsSpawn: 20,
+        coinCollected: 0,
 
         enemyDistanceTolerance: 20,
         enemyValue: 10,
