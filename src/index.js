@@ -3,12 +3,13 @@ import { Colors, game, resetGame } from './conf';
 import { Sky } from './3d/sky';
 import { Particle, ParticlesHolder } from './3d/particle';
 import { CoinsHolder } from './3d/coin';
-import { Enemy, EnemiesHolder} from './3d/enemy';
+import { Enemy, EnemiesHolder } from './3d/enemy';
 import { Falcon } from './3d/falcon';
 import { Planet } from './3d/planet';
 import { handleHandPos, isHandDetected, handleHandState } from './util/leap';
 import * as Leap from 'leapjs';
 import { AudioJam } from './util/audio';
+import { addData, displayTopSeven } from './util/iDB';
 
 // GAME VARIABLES
 var deltaTime = 0;
@@ -46,7 +47,7 @@ function createScene() {
     scene.fog = new THREE.Fog(0xffffff,800, 950);
     camera.position.x = -200;
     camera.position.z = 0;
-    camera.position.y = game.planeDefaultHeight-50;
+    camera.position.y = game.planeDefaultHeight - 50;
     camera.lookAt(new THREE.Vector3(100, 0, 0));
     // console.log("sumbu y " + camera.position.y);
 
@@ -95,6 +96,7 @@ function handleTouchMove(event) {
 function handleMouseUp(event) {
     if (game.status == "waitingReplay") {
         resetGame();
+        hideScoreBoard();
         hideReplay();
     }
 }
@@ -102,27 +104,29 @@ function handleMouseUp(event) {
 function handleTouchEnd(event) {
     if (game.status == "waitingReplay") {
         resetGame();
+        hideScoreBoard();
         hideReplay();
     }
 }
 
 function handleHandGrab(frame) {
-    if (game.status == "waitingReplay") { 
+    if (game.status == "waitingReplay") {
         if (frame.hands.length > 0) {
-            var hand = frame.hands[0]; 
- 
-            if(handleHandState(hand, 10) == "opening"){      
+            var hand = frame.hands[0];
+
+            if (handleHandState(hand, 10) == "opening") {
                 resetGame();
+                hideScoreBoard();
                 hideReplay();
             }
         }
     }
 }
 
-function handleHandMove(frame) { 
+function handleHandMove(frame) {
     var temp = mousePos;
-    if(isHandDetected(frame)){    
-        mousePos = handleHandPos(frame, temp); 
+    if (isHandDetected(frame)) {
+        mousePos = handleHandPos(frame, temp);
     }
 }
 
@@ -130,7 +134,7 @@ function handleHandMove(frame) {
 export var ambientLight, hemisphereLight, shadowLight;
 function createLights() {
     hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, .2)
-    ambientLight = new THREE.AmbientLight(0xa3e5ff, .5); //TODO:: ganti biru
+    ambientLight = new THREE.AmbientLight(0xa3e5ff, .5);
 
     shadowLight = new THREE.DirectionalLight(0xffffff, .6);
     shadowLight.position.set(150, 350, 350);
@@ -163,6 +167,10 @@ function updateDistance() {
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
 }
 
+function updateDebris() {
+    fieldDebris.innerHTML = Math.floor(game.coinCollected);
+}
+
 // TOOLS
 function normalize(v, vmin, vmax, tmin, tmax) {
     var nv = Math.max(Math.min(v, vmax), vmin);
@@ -189,6 +197,7 @@ function updateEnergy() {
     }
 }
 export function addEnergy() {
+    game.coinCollected += 1;
     game.energy += game.coinValue;
     game.energy = Math.min(game.energy, 100);
 }
@@ -197,6 +206,21 @@ export function removeEnergy() {
     game.energy = Math.max(0, game.energy);
 }
 
+function updateHealth() { 
+    healthBar.style.left = (100 - game.health) + "%";
+    healthBar.style.backgroundColor = (game.health < 50) ? "#f25346" : "#68c3c0";
+    if (game.health < 30) {
+        healthBar.style.animationName = "blinking";
+    } else {
+        healthBar.style.animationName = "none";
+    }
+    if (game.health < 1) {
+        game.status = "gameover";
+    }
+}
+export function decreaseHealth() {
+    game.health -= Math.floor(Math.random() * 30) + 10;
+}
 // SHOW CLICK TO REPLAY
 function showReplay() {
     replayMessage.style.display = "block";
@@ -205,6 +229,42 @@ function hideReplay() {
     replayMessage.style.display = "none";
 }
 
+// SHOW PLEASE US LANDSCAPE
+function showLandscape() {
+    landscapeMessage.style.display = "block";
+}
+function hideLandscape() {
+    landscapeMessage.style.display = "none";
+}
+
+// Show form name
+function showFormBoard() {
+    formBoard.style.display = "block";
+}
+function hideFormBoard() {
+    formBoard.style.display = "none";
+}
+
+// Show Score Board
+function showScoreBoard() {
+    scoreBoard.style.display = "block";
+}
+function hideScoreBoard() {
+    scoreBoard.style.display = "none";
+}
+
+function submitScore(event) {
+    event.preventDefault();
+    var name = document.getElementById("playerName").value;
+    var score = Math.floor(game.coinCollected * 5) + Math.floor(game.distance / 15);
+    var stat = false;
+    stat = addData(name, score);
+    if (stat) {
+        game.status = "scoringDone";
+    }
+    // console.log(stat);
+    return false;
+}
 
 // 3D Models
 export var planet;
@@ -216,21 +276,28 @@ export var airplane;
 
 export var audioHit;
 export var audioCollide;
+<<<<<<< HEAD
 export var audioWarp;
 var audioEngine;
+=======
+var audioEngine, audioPlaying;
+>>>>>>> 33346fbc158af49d3f78901d96537081afd9a781
 
 function createAudio() {
     audioHit = new AudioJam("/audio/explosion.mp3");
     audioEngine = new AudioJam("/audio/engine2.mp3");
     audioCollide = new AudioJam("/audio/explosion.mp3");
+<<<<<<< HEAD
     audioWarp = new AudioJam("/audio/warp.mp3");
+=======
+    audioPlaying = new AudioJam("/audio/sw_intothetrap.mp3");
+>>>>>>> 33346fbc158af49d3f78901d96537081afd9a781
 }
 
 function createPlane() {
-    // airplane = new destroyerPlane();
     airplane = new Falcon();
 
-    airplane.mesh.rotation.y = Math.PI/2;
+    airplane.mesh.rotation.y = Math.PI / 2;
     airplane.mesh.scale.set(.075, .075, .075);
     airplane.mesh.position.y = game.planeDefaultHeight;
     scene.add(airplane.mesh);
@@ -239,7 +306,7 @@ function createPlane() {
 
 function createPlanet() {
     planet = new Planet();
-    planet.mesh.position.y = -game.planetRadius-100;
+    planet.mesh.position.y = -game.planetRadius - 100;
     scene.add(planet.mesh);
 }
 
@@ -308,10 +375,17 @@ function loop() {
     deltaTime = newTime - oldTime;
     oldTime = newTime;
 
+    // please use landscape
+    if (window.innerHeight > window.innerWidth) {
+        showLandscape();
+    } else {
+        hideLandscape();
+    }
 
     if (game.status == "playing") {
         // Add energy coins every 100m;
-        if(game.distance == 0) audioEngine.play(true);
+        if (game.distance == 0) audioEngine.play(true);
+        audioPlaying.play(true);
 
         if (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
             game.coinLastSpawn = Math.floor(game.distance);
@@ -335,21 +409,35 @@ function loop() {
 
         updatePlane();
         updateDistance();
+        updateDebris();
         updateEnergy();
+        updateHealth();
+
+        hideFormBoard();
     } else if (game.status == "gameover") {
         audioEngine.pause();
+        audioPlaying.pause();
+
         game.speed *= .99;
         airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * .0002 * deltaTime;
         airplane.mesh.rotation.x += 0.0003 * deltaTime;
         game.planeFallSpeed *= 1.05;
         airplane.mesh.position.y -= game.planeFallSpeed * deltaTime;
         if (airplane.mesh.position.y < -200) {
-            showReplay();
-            game.status = "waitingReplay";
+            showFormBoard();
+            game.status = "scoring";
 
         }
-    } else if (game.status == "waitingReplay") {
+    } else if (game.status == "scoring") {
 
+    } else if (game.status == "scoringDone") {
+        game.status = "waitingReplay";
+        hideFormBoard();
+        showScoreBoard();
+        showReplay();
+    } else if (game.status == "waitingReplay") {
+        hideFormBoard();
+        displayTopSeven();
     }
 
     // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;
@@ -366,12 +454,17 @@ function loop() {
 }
 
 // MAIN 
-var fieldDistance, energyBar, replayMessage, fieldLevel, levelCircle, leap;
+var fieldDistance, fieldDebris, energyBar, healthBar, replayMessage, landscapeMessage, formBoard, scoreBoard, leap;
 function init(event) {
     // UI
     fieldDistance = document.getElementById("distValue");
+    fieldDebris = document.getElementById("debValue");
     energyBar = document.getElementById("energyBar");
+    healthBar = document.getElementById("healthBar");
     replayMessage = document.getElementById("replayMessage");
+    landscapeMessage = document.getElementById("landscapeMessage");
+    formBoard = document.getElementById("formBoard")
+    scoreBoard = document.getElementById("scoreBoard");
 
     // Prepare the game
     resetGame();
@@ -385,6 +478,7 @@ function init(event) {
     createParticles();
     createAudio();
 
+    // prepare leap
     leap = new Leap.Controller();
     leap.connect();
 
@@ -392,9 +486,11 @@ function init(event) {
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('touchmove', handleTouchMove, false);
     document.addEventListener('mouseup', handleMouseUp, false);
-    document.addEventListener('touchend', handleTouchEnd, false); 
+    document.addEventListener('touchend', handleTouchEnd, false);
     leap.on('frame', handleHandMove);
     leap.on('frame', handleHandGrab);
+
+    formBoard.addEventListener('submit', submitScore)
 
     // Run the game
     loop();
