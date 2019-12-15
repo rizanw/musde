@@ -17,8 +17,8 @@ var game = resetGame();
 function resetGame() {
     game = {
         speed: .0005,
-        incrementSpeedByTime: .00025,
-        maxSpeed: .01,
+        incrementSpeedByTime: .000025,
+        maxSpeed: .002,
         distanceForSpeedUpdate: 100,
         speedLastUpdate: 0,
 
