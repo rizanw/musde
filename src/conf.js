@@ -8,6 +8,7 @@ var Colors = {
     yellow:0xf4ce93,
     blue:0x68c3c0,
     bg: 0x3d3d3d,
+    jetblack: 0x444548,
 
 };
 
@@ -15,12 +16,9 @@ var game = resetGame();
 
 function resetGame() {
     game = {
-        speed: 0,
-        initSpeed: .00035,
-        baseSpeed: .00035,
-        targetBaseSpeed: .00035,
-        incrementSpeedByTime: .0000025,
-        incrementSpeedByLevel: .000005,
+        speed: .0005,
+        incrementSpeedByTime: .00025,
+        maxSpeed: .01,
         distanceForSpeedUpdate: 100,
         speedLastUpdate: 0,
 
@@ -63,17 +61,17 @@ function resetGame() {
         cameraNearPos: 150,
         cameraSensivity: 0.002,
 
-        coinDistanceTolerance: 15,
-        coinValue: 3,
+        coinDistanceTolerance: 20,
+        coinValue: 20,
         coinsSpeed: .5,
         coinLastSpawn: 0,
-        distanceForCoinsSpawn: 100,
+        distanceForCoinsSpawn: 20,
 
         enemyDistanceTolerance: 20,
         enemyValue: 10,
         enemiesSpeed: .6,
         enemyLastSpawn: 0,
-        distanceForEnemiesSpawn: 50,
+        distanceForEnemiesSpawn: 40,
 
         status: "playing",
     };

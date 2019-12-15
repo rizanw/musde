@@ -1,7 +1,5 @@
 import * as THREE from "three";
-import { particlesPool } from '../index.js';
-
-var particlesInUse = [];
+import { particlesPool, audioCollide } from '../index.js';
 
 export class Particle { 
     constructor() {
@@ -16,6 +14,7 @@ export class Particle {
     }
 
     explode(pos, color, scale) {
+        audioCollide.play();
         var _this = this;
         var _p = this.mesh.parent;
         this.mesh.material.color = new THREE.Color(color);
@@ -28,7 +27,6 @@ export class Particle {
 export class ParticlesHolder {
     constructor() {
         this.mesh = new THREE.Object3D();
-        this.particlesInUse = [];
     }
 
     spawnParticles(pos, density, color, scale) {

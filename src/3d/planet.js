@@ -7,7 +7,7 @@ export class Planet {
         // geom.applyMatrix(new THREE.Matrix4().makeTranslation(0, 100, 0));
 
         var loader = new THREE.TextureLoader();
-        var mat = new THREE.MeshBasicMaterial({
+        var mat = new THREE.MeshPhongMaterial({
             map: loader.load('/texture/hoth.png')
         });
 

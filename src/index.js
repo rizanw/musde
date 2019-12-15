@@ -8,6 +8,7 @@ import { Falcon } from './3d/falcon';
 import { Planet } from './3d/planet';
 import { handleHandPos, isHandDetected, handleHandState } from './util/leap';
 import * as Leap from 'leapjs';
+import { AudioJam } from './util/audio';
 
 // GAME VARIABLES
 var deltaTime = 0;
@@ -15,7 +16,6 @@ var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
 export var enemiesPool = [];
 export var particlesPool = [];
-var particlesInUse = [];
 
 //THREEJS RELATED VARIABLES
 export var scene,
@@ -129,10 +129,10 @@ function handleHandMove(frame) {
 // LIGHTS
 export var ambientLight, hemisphereLight, shadowLight;
 function createLights() {
-    hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, .9)
+    hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, .2)
     ambientLight = new THREE.AmbientLight(0xa3e5ff, .5); //TODO:: ganti biru
 
-    shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+    shadowLight = new THREE.DirectionalLight(0xffffff, .6);
     shadowLight.position.set(150, 350, 350);
     shadowLight.castShadow = true;
     shadowLight.shadow.camera.left = -400;
@@ -145,7 +145,7 @@ function createLights() {
     shadowLight.shadow.mapSize.height = 4096;
 
     var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
-    //scene.add(ch);
+    // scene.add(ch);
     scene.add(hemisphereLight);
     scene.add(shadowLight);
     scene.add(ambientLight);
@@ -156,7 +156,6 @@ function updateDistance() {
     game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
     fieldDistance.innerHTML = Math.floor(game.distance);
     var d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
-    levelCircle.setAttribute("stroke-dashoffset", d);
 }
 
 // TOOLS
@@ -210,12 +209,15 @@ export var enemiesHolder;
 export var particlesHolder;
 export var airplane;
 
-// export function loadToScene(model) {
-//     model.children[0].name = 'Plane';
-//     model.position.y = game.planeDefaultHeight;
-//     scene.add(model);
+export var audioHit;
+export var audioCollide;
+var audioEngine;
 
-// }
+function createAudio() {
+    audioHit = new AudioJam("/audio/explosion.mp3");
+    audioEngine = new AudioJam("/audio/engine2.mp3");
+    audioCollide = new AudioJam("/audio/explosion.mp3");
+}
 
 function createPlane() {
     // airplane = new destroyerPlane();
@@ -228,7 +230,7 @@ function createPlane() {
     return 0;
 }
 
-function createSea() {
+function createPlanet() {
     planet = new Planet();
     planet.mesh.position.y = -game.planetRadius-100;
     scene.add(planet.mesh);
@@ -279,7 +281,6 @@ function updatePlane() {
     targetY += game.planeCollisionDisplacementY;
 
     airplane.mesh.position.y += (targetY - airplane.mesh.position.y) * deltaTime * game.planeMoveSensivity;
-    // airplane.mesh.position.x += (targetX-airplane.mesh.position.x)*deltaTime*game.planeMoveSensivity;
     airplane.mesh.position.z += (targetZ - airplane.mesh.position.z) * deltaTime * game.planeMoveSensivity;
 
     airplane.mesh.rotation.z = (targetY - airplane.mesh.position.y) * deltaTime * game.planeRotXSensivity;
@@ -293,7 +294,6 @@ function updatePlane() {
     game.planeCollisionDisplacementX += (0 - game.planeCollisionDisplacementX) * deltaTime * 0.01;
     game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * deltaTime * 0.03;
     game.planeCollisionDisplacementY += (0 - game.planeCollisionDisplacementY) * deltaTime * 0.01;
-
 }
 
 function loop() {
@@ -304,14 +304,16 @@ function loop() {
 
     if (game.status == "playing") {
         // Add energy coins every 100m;
+        if(game.distance == 0) audioEngine.play(true);
+
         if (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
             game.coinLastSpawn = Math.floor(game.distance);
             coinsHolder.spawnCoins();
         }
 
         if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
-            game.speedLastUpdate = Math.floor(game.distance);
-            game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
+            game.speed = Math.min(game.speed + game.incrementSpeedByTime, game.maxSpeed);
+            console.log(game.speed)
         }
 
         if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
@@ -319,19 +321,11 @@ function loop() {
             enemiesHolder.spawnEnemies();
         }
 
-        if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
-            game.levelLastUpdate = Math.floor(game.distance);
-            game.level++;
-            fieldLevel.innerHTML = Math.floor(game.level);
-
-            game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level
-        }
         updatePlane();
         updateDistance();
         updateEnergy();
-        game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
-        game.speed = game.baseSpeed * game.planeSpeed;
     } else if (game.status == "gameover") {
+        audioEngine.pause();
         game.speed *= .99;
         airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * .0002 * deltaTime;
         airplane.mesh.rotation.x += 0.0003 * deltaTime;
@@ -366,19 +360,18 @@ function init(event) {
     fieldDistance = document.getElementById("distValue");
     energyBar = document.getElementById("energyBar");
     replayMessage = document.getElementById("replayMessage");
-    fieldLevel = document.getElementById("levelValue");
-    levelCircle = document.getElementById("levelCircleStroke");
 
     // Prepare the game
     resetGame();
     createScene();
     createLights();
     createPlane();
-    createSea();
+    createPlanet();
     createSky();
     createCoins();
     createEnemies();
     createParticles();
+    createAudio();
 
     leap = new Leap.Controller();
     leap.connect();
