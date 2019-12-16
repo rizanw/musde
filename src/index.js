@@ -443,11 +443,11 @@ function loop() {
     } else if (game.status == "scoringDone") {
         game.status = "waitingReplay";
         hideFormBoard();
+        displayTopSeven();
         showScoreBoard();
         showReplay();
     } else if (game.status == "waitingReplay") {
         hideFormBoard();
-        displayTopSeven();
     }
 
     // airplane.propeller.rotation.x +=.2 + game.planeSpeed * deltaTime*.005;

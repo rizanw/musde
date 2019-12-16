@@ -82,15 +82,14 @@ export function displayTopSeven() {
 
     // Open our object store and then get a cursor - which iterates through all the
     // different data items in the store
-    var keyRange = IDBKeyRange.lowerBound("score", false);
     let objectStore = db.transaction(['musde_db'], "readonly").objectStore('musde_db');
 
     objectStore.index('score').openCursor(null, 'prev').onsuccess = function (e) {
         let cursor = e.target.result; 
-
         if(cursor) {
             cursor.continue();
             countTop+=1;
+            console.log(cursor);
             if(countTop <= 7){  
                 var tableRef = document.getElementById('score-table');
                 var newRow = tableRef.insertRow(-1);
@@ -100,9 +99,11 @@ export function displayTopSeven() {
                 cellRank.innerHTML = countTop;
                 cellScore.innerHTML = cursor.value.score;
                 cellName.innerHTML = cursor.value.name;
+            
             }
         }else{
-            // console.log('Notes all displayed');
+            console.log('Notes all displayed');
+            countTop = 0;
         }
     }
 }
