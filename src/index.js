@@ -96,11 +96,12 @@ function handleTouchMove(event) {
 function handleMouseUp(event) {
     if (game.status == "start"){
         hideReplay();
-        audioMain.pause();
         game.status = "playing";
+        audioEngine.play(true);
     }
 
     if (game.status == "waitingReplay") {
+        audioEngine.pause();
         resetGame();
         hideScoreBoard();
         hideReplay();
@@ -108,7 +109,14 @@ function handleMouseUp(event) {
 }
 
 function handleTouchEnd(event) {
+    if (game.status == "start"){
+        hideReplay();
+        game.status = "playing";
+        audioEngine.play(true);
+    }
+    
     if (game.status == "waitingReplay") {
+        audioEngine.pause();
         resetGame();
         hideScoreBoard();
         hideReplay();
@@ -116,14 +124,18 @@ function handleTouchEnd(event) {
 }
 
 function handleHandGrab(frame) {
-    if (game.status == "waitingReplay") {
+    // console.log("grab");
+    if (game.status == "waitingReplay" || game.status == "start") {
         if (frame.hands.length > 0) {
-            var hand = frame.hands[0];
+            var hand = frame.hands[0]; 
 
-            if (handleHandState(hand, 10) == "opening") {
+            if (handleHandState(hand, 10) == "opening") { 
+                // console.log(handleHandState(hand, 10));
                 resetGame();
                 hideScoreBoard();
                 hideReplay();
+                game.status = "playing";
+                audioEngine.play(true);
             }
         }
     }
@@ -283,17 +295,14 @@ export var airplane;
 export var audioHit;
 export var audioCollide;
 export var audioWarp;
-var audioEngine, audioPlaying, audioMain;
+var audioEngine, audioMain;
 
 function createAudio() {
     audioHit = new AudioJam("/audio/explosion.mp3");
     audioEngine = new AudioJam("/audio/engine2.mp3");
     audioCollide = new AudioJam("/audio/explosion.mp3");
     audioWarp = new AudioJam("/audio/warp.mp3");
-    audioPlaying = new AudioJam("/audio/sw_intothetrap.mp3");
-    audioMain = new AudioJam("/audio/sw_main.mp3");
-
-    audioMain.play();
+    audioMain = new AudioJam("/audio/sw_main.mp3", true, true);
 }
 
 function createPlane() {
@@ -388,8 +397,7 @@ function loop() {
     } else if (game.status == "playing") {
         // Add energy coins every 100m;
         hideReplay();
-        if (game.distance == 0) audioEngine.play(true);
-        audioPlaying.play(true);
+        // if (game.distance == 0) audioEngine.play(true);
 
         if (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
             game.coinLastSpawn = Math.floor(game.distance);
@@ -419,7 +427,6 @@ function loop() {
         hideFormBoard();
     } else if (game.status == "gameover") {
         audioEngine.pause();
-        audioPlaying.pause();
 
         game.speed *= .99;
         airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * .0002 * deltaTime;
@@ -493,7 +500,7 @@ function init(event) {
     leap.on('frame', handleHandMove);
     leap.on('frame', handleHandGrab);
 
-    formBoard.addEventListener('submit', submitScore)
+    formBoard.addEventListener('submit', submitScore);
 
     // Run the game
     loop();
