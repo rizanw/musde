@@ -8,6 +8,7 @@ var Colors = {
     yellow:0xf4ce93,
     blue:0x68c3c0,
     bg: 0x3d3d3d,
+    jetblack: 0x444548,
 
 };
 
@@ -15,18 +16,16 @@ var game = resetGame();
 
 function resetGame() {
     game = {
-        speed: 0,
-        initSpeed: .00035,
-        baseSpeed: .00035,
-        targetBaseSpeed: .00035,
-        incrementSpeedByTime: .0000025,
-        incrementSpeedByLevel: .000005,
+        speed: .0005,
+        incrementSpeedByTime: .000025,
+        maxSpeed: .002,
         distanceForSpeedUpdate: 100,
         speedLastUpdate: 0,
 
         distance: 0,
         ratioSpeedDistance: 50,
         energy: 100,
+        health: 100,
         ratioSpeedEnergy: 3,
 
         level: 1,
@@ -50,10 +49,10 @@ function resetGame() {
         planeCollisionDisplacementY: 0,
         planeCollisionSpeedY: 0,
 
-        seaRadius: 1200,
-        seaLength: 800,
-        seaHeight: 200,
-        //seaRotationSpeed:0.006,
+        planetRadius: 1200,
+        planetLength: 800,
+        planetHeight: 200,
+        //planetRotationSpeed:0.006,
         wavesMinAmp: 5,
         wavesMaxAmp: 20,
         wavesMinSpeed: 0.001,
@@ -63,19 +62,20 @@ function resetGame() {
         cameraNearPos: 150,
         cameraSensivity: 0.002,
 
-        coinDistanceTolerance: 15,
-        coinValue: 3,
+        coinDistanceTolerance: 20,
+        coinValue: 20,
         coinsSpeed: .5,
         coinLastSpawn: 0,
-        distanceForCoinsSpawn: 100,
+        distanceForCoinsSpawn: 20,
+        coinCollected: 0,
 
         enemyDistanceTolerance: 20,
         enemyValue: 10,
         enemiesSpeed: .6,
         enemyLastSpawn: 0,
-        distanceForEnemiesSpawn: 50,
+        distanceForEnemiesSpawn: 40,
 
-        status: "playing",
+        status: "start",
     };
 }
 

@@ -1,0 +1,34 @@
+{
+  "name": "musde",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx http-server ./public",
+    "start:dev": "webpack-dev-server",
+    "build": "npx webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizanw/musde.git"
+  },
+  "author": "ray-marcher-grafkom-d",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rizanw/musde/issues"
+  },
+  "homepage": "https://github.com/rizanw/musde#readme",
+  "devDependencies": {
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.7.5",
+    "http-server": "^0.12.0",
+    "leapjs": "^0.6.4",
+    "three": "^0.111.0"
+  }
+}
