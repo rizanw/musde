@@ -6,7 +6,7 @@ export class Falcon {
     constructor() {
         this.mesh = new THREE.Object3D();
         var matSilver = new THREE.MeshPhongMaterial({color: Colors.jetblack})
-        var matBlue = new THREE.MeshPhongMaterial({color: Colors.blue});
+        var matBlue = new THREE.MeshPhongMaterial({color: Colors.blue, shininess: 100, emissive: Colors.blue});
 
         var light = new THREE.PointLight(Colors.blue);
 
@@ -19,8 +19,7 @@ export class Falcon {
                 if (o.isMesh){
                     o.castShadow = true;
 
-                    if(o.material.name == "Engine02") {
-                        console.log(o);                
+                    if(o.material.name == "Engine02") {             
                         o.material = matBlue;
                     } else {
                         o.material = matSilver;

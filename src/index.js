@@ -94,6 +94,12 @@ function handleTouchMove(event) {
 }
 
 function handleMouseUp(event) {
+    if (game.status == "start"){
+        hideReplay();
+        audioMain.pause();
+        game.status = "playing";
+    }
+
     if (game.status == "waitingReplay") {
         resetGame();
         hideScoreBoard();
@@ -277,7 +283,7 @@ export var airplane;
 export var audioHit;
 export var audioCollide;
 export var audioWarp;
-var audioEngine, audioPlaying;
+var audioEngine, audioPlaying, audioMain;
 
 function createAudio() {
     audioHit = new AudioJam("/audio/explosion.mp3");
@@ -285,6 +291,9 @@ function createAudio() {
     audioCollide = new AudioJam("/audio/explosion.mp3");
     audioWarp = new AudioJam("/audio/warp.mp3");
     audioPlaying = new AudioJam("/audio/sw_intothetrap.mp3");
+    audioMain = new AudioJam("/audio/sw_main.mp3");
+
+    audioMain.play();
 }
 
 function createPlane() {
@@ -374,9 +383,11 @@ function loop() {
     } else {
         hideLandscape();
     }
-
-    if (game.status == "playing") {
+    if (game.status == "start") {
+        showReplay();
+    } else if (game.status == "playing") {
         // Add energy coins every 100m;
+        hideReplay();
         if (game.distance == 0) audioEngine.play(true);
         audioPlaying.play(true);
 
@@ -387,7 +398,7 @@ function loop() {
 
         if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
             game.speed = Math.min(game.speed + game.incrementSpeedByTime, game.maxSpeed);
-            console.log(game.speed)
+            // console.log(game.speed)
         }
 
         if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
@@ -395,8 +406,7 @@ function loop() {
             enemiesHolder.spawnEnemies();
         }
 
-        if(Math.floor(game.distance) % 213 < 2 && game.distance > 100) {
-            console.log("should tr");
+        if(Math.floor(game.distance) % 1000 < 2 && game.distance > 100) {
             planet.transition();
         }
 

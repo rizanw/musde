@@ -75,7 +75,7 @@ function resetGame() {
         enemyLastSpawn: 0,
         distanceForEnemiesSpawn: 40,
 
-        status: "playing",
+        status: "start",
     };
 }
 

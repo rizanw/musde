@@ -12,7 +12,9 @@ export class Planet {
 
         this.loader = new THREE.TextureLoader();
         this.mat = new THREE.MeshPhongMaterial({
-            map: this.loader.load('/texture/hoth.png')
+            map: this.loader.load('/texture/hoth.png'),
+            specular: 0xffffff,
+            shininess: 80,
         });
 
         this.mesh = new THREE.Mesh(this.geom, this.mat);
@@ -37,23 +39,21 @@ export class Planet {
     async transition() {
         audioWarp.play();
         for(let i=0; i<10; i++){
-            await sleep(200);
-            
+            await sleep(200);          
+
             for(let it of scene.children) {
                 if(it.name == 'Pointy'){
                     it.intensity += 0.1;
-                    console.log(it.intensity);
                 }
             }
         }
         this.swap_texture();
         for(let i=0; i<10; i++){
-            await sleep(200);
-            
+            await sleep(200);         
+
             for(let it of scene.children) {
                 if(it.name == 'Pointy'){
                     it.intensity -= 0.1;
-                    console.log(it.intensity);
                 }
             }
         }
