@@ -1,0 +1,6 @@
+[build]
+  command = "npx webpack --mode production --devtool false"
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "22"
